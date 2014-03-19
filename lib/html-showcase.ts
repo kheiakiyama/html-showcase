@@ -7,7 +7,7 @@ interface ShowCaseOption {
 	url: string;
 	previewtime: string;
 	playtime: number;
-	force: boolean;
+	priority: number;
 }
 
 class ShowCase {
@@ -32,33 +32,27 @@ class ShowCase {
         w3c_slidy.init();
 	}
 
-   exists_force_time(date: Date) {
+   most_priority(date: Date) {
+        var min = 999;
         for (var i = 0; i < this.items.length; i++) {
             if (this.items[i].in_time(date) &&
-                this.items[i].is_force())
-                return true;
+                min > this.items[i].priority()) {
+                min = this.items[i].priority();
+            }
         }
-        return false;
+        return min;
     }
 
     move_slide_timer() {
         var date = new Date();
         var newIndex = w3c_slidy.slide_number;
-        var exists = this.exists_force_time(date);
+        var most_priority = this.most_priority(date);
         var found = true;
-        if (exists) {
-            do {
-                newIndex = (newIndex + 1) % w3c_slidy.slides.length;
-                found = this.items[newIndex].in_time(date) &&
-                        this.items[newIndex].is_force();
-            } while (!found);
-        } else {
-            do {
-                newIndex = (newIndex + 1) % w3c_slidy.slides.length;
-                found = this.items[newIndex].in_time(date) ||
-                        !this.items[newIndex].has_time();
-            } while (!found);
-        }
+        do {
+            newIndex = (newIndex + 1) % w3c_slidy.slides.length;
+            found = this.items[newIndex].in_time(date) &&
+                    most_priority === this.items[newIndex].priority();
+        } while (!found);
         if (newIndex !== w3c_slidy.slide_number) {
             w3c_slidy.goto_slide(newIndex);
             w3c_slidy.set_location();
@@ -76,8 +70,8 @@ class ShowCaseItem {
 	option: ShowCaseOption;
 	default: any = {
         reloadtime: 3600,
-        previewtime: undefined,
-        force: false,
+        previewtime: "* * * * *",
+        priority: 100,
         playtime: 60
     };
     element: JQuery;
@@ -98,39 +92,31 @@ class ShowCaseItem {
         }, this.option.reloadtime * 1000);
     }
 
-    has_time() {
-        return this.option.previewtime !== undefined;
-    }
-
-    is_force() {
-        return this.option.force;
+    priority() {
+        return this.option.priority;
     }
 
     in_time(date: Date) {
-        if (this.has_time()) {
-            var test = <any>[date.getMinutes(), date.getHours(), date.getDate(), date.getMonth() + 1, date.getDay()];
-            var option_date = this.option.previewtime.split(" ");
-            for (var index in option_date) {
-                if (option_date[index]) {
-                    var nums = option_date[index].split(",");
-                    var match = <any>false;
-                    for (var i in nums) {
-                        if (nums[i] == "*")
-                            match = true;
-                        else if (nums[i].indexOf("-") > -1) {
-                            var range = nums[i].split("-");
-                            match |= <any>(range[0] <= test[index] && range[1] >= test[index]);
-                        } else {
-                            match |= <any>(nums[i] == test[index]);
-                        }
+        var test = <any>[date.getMinutes(), date.getHours(), date.getDate(), date.getMonth() + 1, date.getDay()];
+        var option_date = this.option.previewtime.split(" ");
+        for (var index in option_date) {
+            if (option_date[index]) {
+                var nums = option_date[index].split(",");
+                var match = <any>false;
+                for (var i in nums) {
+                    if (nums[i] == "*")
+                        match = true;
+                    else if (nums[i].indexOf("-") > -1) {
+                        var range = nums[i].split("-");
+                        match |= <any>(range[0] <= test[index] && range[1] >= test[index]);
+                    } else {
+                        match |= <any>(nums[i] == test[index]);
                     }
-                    if (!match)
-                        return false;
                 }
+                if (!match)
+                    return false;
             }
-            return true;
-        } else {
-            return false;
         }
+        return true;;
     }
 }
