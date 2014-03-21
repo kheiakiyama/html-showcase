@@ -26,6 +26,23 @@ test( "next_slide skip exclude", function() {
 	target.next_slide(new Date(2014, 3, 20, 8, 0));
 	equal(0, w3c_slidy.slide_number);
 });
+test( "next_slide priority", function() {
+	var target = new ShowCase($("<div >"),
+		[
+			{ priority: 100, previewtime: "* * * * *" },
+			{ priority: 1, previewtime: "* * * * *" },
+			{ priority: 100, previewtime: "* * * * *" },
+			{ priority: 1, previewtime: "* * * * *" }
+		]
+	);
+	equal(0, w3c_slidy.slide_number);
+	target.next_slide(new Date());
+	equal(1, w3c_slidy.slide_number);
+	target.next_slide(new Date());
+	equal(3, w3c_slidy.slide_number);
+	target.next_slide(new Date());
+	equal(1, w3c_slidy.slide_number);
+});
 
 module("ShowCaseItem");
 test( "in_time always", function() {
