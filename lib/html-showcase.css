@@ -1,35 +1,18 @@
 @charset "utf-8";
 
-body {
-	overflow-x: hidden;
-	overflow-y: hidden;
-}
-
-.slide_fw {
-	width: 1920px !important;
-	height: 1080px !important;
-	margin: 0 0 0 0;
-	padding: 0 0 0 0;
-	background-color: white;
-}
-
 div.toolbar {
   visibility:hidden !important;
-}
-
-div.slide {
-  padding-left: 0px !important;
-  padding-right: 0px !important;
 }
 
 div.initial_prompt{
   visibility:hidden !important;
 }
 
-@media screen {
-  body.single_slide .hidden {
-    display: block !important;
-    visibility: visible !important;
-    z-index: 10;
-  }
+div.slide {
+  padding: 0;
+}
+
+.showcaseitem{
+  width: 100%;
+  height: 100%;
 }

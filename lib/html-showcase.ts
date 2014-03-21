@@ -84,7 +84,7 @@ class ShowCaseItem {
 	constructor(option: ShowCaseOption) {
 		this.option = $.extend(this.default, option);
 		this.element = $("<object />")
-                .addClass("slide_fw")
+                .addClass("showcaseitem")
                 .attr("type", "text/php")
                 .attr("data", this.option.url);
         this.reload_hook();
