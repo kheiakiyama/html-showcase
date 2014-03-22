@@ -74,7 +74,7 @@ class ShowCase {
 class ShowCaseItem {
 	option: ShowCaseOption;
 	default: any = {
-        reloadtime: 3600,
+        reloadtime: null,
         previewtime: "* * * * *",
         priority: 100,
         playtime: 60
@@ -87,7 +87,9 @@ class ShowCaseItem {
                 .addClass("showcaseitem")
                 .attr("type", "text/php")
                 .attr("data", this.option.url);
-        this.reload_hook();
+        if (this.option.reloadtime) {
+            this.reload_hook();
+        }
 	}
 
 	reload_hook() {

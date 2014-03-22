@@ -64,7 +64,7 @@ var showcase = new ShowCase($("#showcase"), [
 
 ### reloadtime
 コンテンツを再読み込みする時間（秒）です。  
-default:3600
+default:null（リロードしません）
 ### playtime
 コンテンツを表示する時間（秒）です。  
 default:60
