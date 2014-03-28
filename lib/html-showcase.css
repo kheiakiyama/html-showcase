@@ -10,6 +10,7 @@ div.initial_prompt{
 
 div.slide {
   padding: 0;
+  overflow: hidden;
 }
 
 .showcaseitem{
